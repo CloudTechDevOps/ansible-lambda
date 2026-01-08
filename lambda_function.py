@@ -24,7 +24,7 @@ def lambda_handler(event, context):
                 # Try ECDSA as fallback
                 pkey = paramiko.ECDSAKey.from_private_key_file(key_file_path)
     except Exception as e:
-        print(f"❌ Failed to load private key: {e}")
+        print(f" Failed to load private key: {e}")
         raise
 
     # === SSH Connection ===
@@ -33,18 +33,18 @@ def lambda_handler(event, context):
 
     try:
         ssh_client.connect(hostname=ec2_host, username=ec2_user, pkey=pkey)
-        print(f"✅ Connected to {ec2_host}")
+        print(f" Connected to {ec2_host}")
 
         # === Run your Ansible playbook ===
         command = f"ansible-playbook {ansible_playbook}"
         stdin, stdout, stderr = ssh_client.exec_command(command)
 
-        print("📜 STDOUT:\n", stdout.read().decode())
-        print("⚠️ STDERR:\n", stderr.read().decode())
+        print(" STDOUT:\n", stdout.read().decode())
+        print(" STDERR:\n", stderr.read().decode())
 
     except Exception as e:
-        print(f"❌ SSH or command execution failed: {e}")
+        print(f" SSH or command execution failed: {e}")
         raise
     finally:
         ssh_client.close()
-        print("🔒 SSH connection closed.")
+        print(" SSH connection closed.")
